@@ -12,8 +12,8 @@ jobs:
     strategy:
       matrix:
         include:
-          - arch: aarch64
-            distro: ubuntu18.04
+          - arch: armv7
+            distro: buster
           - arch: ppc64le
             distro: alpine_latest
           - arch: s390x
