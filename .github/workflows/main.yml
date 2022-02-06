@@ -5,7 +5,7 @@ on: [push, pull_request]
 jobs:
   build_job:
     # The host should always be linux
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     name: Build on ${{ matrix.distro }} ${{ matrix.arch }}
 
     # Run steps on a matrix of 3 arch/distro combinations
@@ -13,7 +13,7 @@ jobs:
       matrix:
         include:
           - arch: armv7
-            distro: buster
+            distro: bullseye
 
     steps:
       - uses: actions/checkout@v2.1.0
@@ -50,18 +50,14 @@ jobs:
               ubuntu*|jessie|stretch|buster|bullseye)
                 apt-get update -q -y
                 apt-get upgrade -q -y
-                apt-get install -q -y gcc-10 g++10 git make patch git texinfo bison flex gettext libgmp3-dev libmpfr-dev libmpc-dev wget
+                apt-get install -q -y wget bzip2 build-essential apt-utils autoconf  
+                apt-get install -q -y zlib1g-dev bison flex texinfo libelf-dev automake 
+                apt-get install -q -y elfutils libdebuginfod-dev
                 ;;
             esac
           # Produce a binary artifact and place it in the mounted volume
           run: |
-            git clone https://github.com/ps2dev/ps2dev
-            cd ps2dev
-            export PS2DEV=$PWD/ps2dev
-            export PS2SDK=$PS2DEV/ps2sdk
-            export GSKIT=$PS2DEV/gsKit
-            export PATH=$PATH:$PS2DEV/bin:$PS2DEV/ee/bin:$PS2DEV/iop/bin:$PS2DEV/dvp/bin:$PS2SDK/bin
-            ./build-all.sh
+            ./toolchain.sh
             cp $(which git) "/artifacts/${artifact_name}"
             echo "Produced artifact at /artifacts/${artifact_name}"
             
