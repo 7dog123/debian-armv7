@@ -14,10 +14,6 @@ jobs:
         include:
           - arch: armv7
             distro: buster
-          - arch: ppc64le
-            distro: alpine_latest
-          - arch: s390x
-            distro: fedora_latest
 
     steps:
       - uses: actions/checkout@v2.1.0
@@ -54,14 +50,6 @@ jobs:
               ubuntu*|jessie|stretch|buster|bullseye)
                 apt-get update -q -y
                 apt-get install -q -y git gcc make patch git texinfo bison flex gettext libgmp3-dev libmpfr-dev libmpc-dev wget
-                ;;
-              fedora*)
-                dnf -y update
-                dnf -y install git which
-                ;;
-              alpine*)
-                apk update
-                apk add git
                 ;;
             esac
           # Produce a binary artifact and place it in the mounted volume
