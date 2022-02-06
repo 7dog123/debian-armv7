@@ -13,11 +13,7 @@ jobs:
       matrix:
         include:
           - arch: armv7
-            distro: buster
-          - arch: ppc64le
-            distro: alpine_latest
-          - arch: s390x
-            distro: fedora_latest
+            distro: bullseye
 
     steps:
       - uses: actions/checkout@v2.1.0
@@ -56,15 +52,7 @@ jobs:
             case "${{ matrix.distro }}" in
               ubuntu*|jessie|stretch|buster|bullseye)
                 apt-get update -q -y
-                apt-get install -q -y git
-                ;;
-              fedora*)
-                dnf -y update
-                dnf -y install git which
-                ;;
-              alpine*)
-                apk update
-                apk add git
+                apt-get install -q -y gcc make patch git texinfo bison flex gettext libgmp3-dev libmpfr-dev libmpc-dev wget
                 ;;
             esac
 
@@ -72,6 +60,13 @@ jobs:
           run: |
             cp $(which git) "/artifacts/${artifact_name}"
             echo "Produced artifact at /artifacts/${artifact_name}"
+            git clone https://github.com/ps2dev/ps2dev
+            cd ps2dev
+            export PS2DEV=$PWD/ps2dev
+            export PS2SDK=$PS2DEV/ps2sdk
+            export GSKIT=$PS2DEV/gsKit
+            export PATH=$PATH:$PS2DEV/bin:$PS2DEV/ee/bin:$PS2DEV/iop/bin:$PS2DEV/dvp/bin:$PS2SDK/bin
+           ./build-all.sh
 
       - name: Show the artifact
         # Items placed in /artifacts in the container will be in
