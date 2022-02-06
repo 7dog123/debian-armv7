@@ -21,8 +21,8 @@ jobs:
         name: Build artifact
         id: build
         with:
-          arch: ${{ matrix.arch }}
-          distro: ${{ matrix.distro }}
+          arch: armv7
+          distro: bullseye
 
           # Not required, but speeds up builds
           githubToken: ${{ github.token }}
@@ -37,7 +37,7 @@ jobs:
 
           # Pass some environment variables to the container
           env: | # YAML, but pipe character is necessary
-            artifact_name: git-${{ matrix.distro }}_${{ matrix.arch }}
+            artifact_name: git-bullseye_armv7
 
           # The shell to run commands with in the container
           shell: /bin/sh
