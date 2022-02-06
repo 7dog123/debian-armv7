@@ -13,7 +13,7 @@ jobs:
       matrix:
         include:
           - arch: armv7
-            distro: bullseye
+            distro: buster
           - arch: ppc64le
             distro: alpine_latest
           - arch: s390x
@@ -34,15 +34,12 @@ jobs:
           # Create an artifacts directory
           setup: |
             mkdir -p "${PWD}/artifacts"
-
           # Mount the artifacts directory as /artifacts in the container
           dockerRunArgs: |
             --volume "${PWD}/artifacts:/artifacts"
-
           # Pass some environment variables to the container
           env: | # YAML, but pipe character is necessary
-            artifact_name: artifact_name: ps2dev-${{ matrix.distro }}_${{ matrix.arch }}
-
+            artifact_name: git-${{ matrix.distro }}_${{ matrix.arch }}
           # The shell to run commands with in the container
           shell: /bin/sh
 
@@ -56,29 +53,29 @@ jobs:
             case "${{ matrix.distro }}" in
               ubuntu*|jessie|stretch|buster|bullseye)
                 apt-get update -q -y
-                apt-get install -q -y gcc make patch git texinfo bison flex gettext libgmp3-dev libmpfr-dev libmpc-dev wget
+                apt-get install -q -y git gcc make patch git texinfo bison flex gettext libgmp3-dev libmpfr-dev libmpc-dev wget
                 ;;
-                fedora*)
+              fedora*)
                 dnf -y update
                 dnf -y install git which
                 ;;
-                alpine*)
+              alpine*)
                 apk update
                 apk add git
+                ;;
             esac
-
           # Produce a binary artifact and place it in the mounted volume
           run: |
-            cp $(which git) "/artifacts/${artifact_name}"
-            echo "Produced artifact at /artifacts/${artifact_name}"
             git clone https://github.com/ps2dev/ps2dev
             cd ps2dev
             export PS2DEV=$PWD/ps2dev
             export PS2SDK=$PS2DEV/ps2sdk
             export GSKIT=$PS2DEV/gsKit
             export PATH=$PATH:$PS2DEV/bin:$PS2DEV/ee/bin:$PS2DEV/iop/bin:$PS2DEV/dvp/bin:$PS2SDK/bin
-           ./build-all.sh
-
+            ./build-all.sh
+            cp $(which git) "/artifacts/${artifact_name}"
+            echo "Produced artifact at /artifacts/${artifact_name}"
+            
       - name: Show the artifact
         # Items placed in /artifacts in the container will be in
         # ${PWD}/artifacts on the host.
