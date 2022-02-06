@@ -49,7 +49,8 @@ jobs:
             case "${{ matrix.distro }}" in
               ubuntu*|jessie|stretch|buster|bullseye)
                 apt-get update -q -y
-                apt-get install -q -y git gcc make patch git texinfo bison flex gettext libgmp3-dev libmpfr-dev libmpc-dev wget
+                apt-get upgrade -q -y
+                apt-get install -q -y build-essential git make patch git texinfo bison flex gettext libgmp3-dev libmpfr-dev libmpc-dev wget
                 ;;
             esac
           # Produce a binary artifact and place it in the mounted volume
