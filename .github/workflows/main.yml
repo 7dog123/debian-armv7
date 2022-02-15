@@ -52,9 +52,9 @@ jobs:
             case "${{ matrix.distro }}" in
               ubuntu*|jessie|stretch|buster|bullseye)
                 apt-get upgrade -q -y
-                apt-get install -q -y wget bzip2 build-essential apt-utils autoconf  
+                apt-get install -q -y build-essential apt-utils autoconf  
                 apt-get install -q -y zlib1g-dev bison flex texinfo libelf-dev automake 
-                apt-get install -q -y elfutils libdebuginfod-dev git
+                apt-get install -q -y elfutils libdebuginfod-dev git wget bzip2
                 ;;
             esac
 
